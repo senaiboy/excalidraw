@@ -128,3 +128,23 @@
     }
   }
 }
+
+// Hide the library toolbar button
+.ToolIcon[data-testid="toolbar-libraries"],
+.sidebar-trigger[data-testid="library-button"],
+[aria-label="Library"],
+.layer-ui__library-button {
+  display: none !important;
+}
+
+// Hide the header (title + close row) inside the Help dialog
+.HelpDialog__header {
+  display: none !important;
+}
+
+// Hide the bottom-right encryption notice and its enclosing footer row
+.encrypted-icon,
+.footer-center,
+.App-menu__left .footer-row {
+  display: none !important;
+}

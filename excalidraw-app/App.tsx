@@ -102,6 +102,7 @@ import DebugCanvas, {
 } from "./components/DebugCanvas";
 
 import "./index.scss";
+import "./overrides.scss";
 
 polyfill();
 
@@ -632,7 +633,6 @@ const ExcalidrawWrapper = () => {
             image: true,
           },
           dockedSidebarBreakpoint: 0,
-          libraryButton: false,
         }}
         renderSidebar={() => null}
         langCode={langCode}
