@@ -77,7 +77,6 @@ import {
   localStorageQuotaExceededAtom,
   LocalData,
 } from "./data/LocalData";
-import { AppFooter } from "./components/AppFooter";
 import { AppMainMenu } from "./components/AppMainMenu";
 import { AppWelcomeScreen } from "./components/AppWelcomeScreen";
 import { TopErrorBoundary } from "./components/TopErrorBoundary";
@@ -101,7 +100,6 @@ import DebugCanvas, {
   isVisualDebuggerEnabled,
   loadSavedDebugState,
 } from "./components/DebugCanvas";
-import { AppSidebar } from "./components/AppSidebar";
 
 import "./index.scss";
 
@@ -636,6 +634,7 @@ const ExcalidrawWrapper = () => {
           dockedSidebarBreakpoint: 0,
           libraryButton: false,
         }}
+        renderSidebar={() => null}
         langCode={langCode}
         renderCustomStats={renderCustomStats}
         detectScroll={false}
@@ -660,15 +659,12 @@ const ExcalidrawWrapper = () => {
           <OverwriteConfirmDialog.Actions.ExportToImage />
           <OverwriteConfirmDialog.Actions.SaveToDisk />
         </OverwriteConfirmDialog>
-        <AppFooter onChange={() => excalidrawAPI?.refresh()} />
 
         {localStorageQuotaExceeded && (
           <div className="alert alert--danger">
             {t("alerts.localStorageQuotaExceeded")}
           </div>
         )}
-
-        <AppSidebar />
 
         {errorMessage && (
           <ErrorDialog onClose={() => setErrorMessage("")}>
