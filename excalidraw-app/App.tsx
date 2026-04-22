@@ -1,6 +1,5 @@
 import {
   Excalidraw,
-  TTDDialogTrigger,
   CaptureUpdateAction,
   reconcileElements,
   useEditorInterface,
@@ -43,10 +42,6 @@ import {
 import { newElementWith } from "@excalidraw/element";
 import { isInitializedImageElement } from "@excalidraw/element";
 import clsx from "clsx";
-import {
-  parseLibraryTokensFromUrl,
-  useHandleLibrary,
-} from "@excalidraw/excalidraw/data/library";
 
 import type { RestoredDataState } from "@excalidraw/excalidraw/data/restore";
 import type {
@@ -80,8 +75,6 @@ import {
 } from "./app_constants";
 import {
   localStorageQuotaExceededAtom,
-  LibraryIndexedDBAdapter,
-  LibraryLocalStorageMigrationAdapter,
   LocalData,
 } from "./data/LocalData";
 import { AppFooter } from "./components/AppFooter";
@@ -89,7 +82,7 @@ import { AppMainMenu } from "./components/AppMainMenu";
 import { AppWelcomeScreen } from "./components/AppWelcomeScreen";
 import { TopErrorBoundary } from "./components/TopErrorBoundary";
 
-import { getCollaborationLinkData, importFromBackend } from "./data";
+import { importFromBackend } from "./data";
 
 import { updateStaleImageStatuses } from "./data/FileManager";
 import { FileStatusStore } from "./data/fileStatusStore";
@@ -108,7 +101,6 @@ import DebugCanvas, {
   isVisualDebuggerEnabled,
   loadSavedDebugState,
 } from "./components/DebugCanvas";
-import { AIComponents } from "./components/AI";
 import { AppSidebar } from "./components/AppSidebar";
 
 import "./index.scss";
@@ -298,11 +290,6 @@ const ExcalidrawWrapper = () => {
     setTimeout(() => {}, VERSION_TIMEOUT);
   }, []);
 
-  useHandleLibrary({
-    excalidrawAPI,
-    adapter: LibraryIndexedDBAdapter,
-    migrationAdapter: LibraryLocalStorageMigrationAdapter,
-  });
 
   const [, forceRefresh] = useState(false);
 
@@ -390,23 +377,20 @@ const ExcalidrawWrapper = () => {
 
     const onHashChange = async (event: HashChangeEvent) => {
       event.preventDefault();
-      const libraryUrlTokens = parseLibraryTokensFromUrl();
-      if (!libraryUrlTokens) {
-        excalidrawAPI.updateScene({ appState: { isLoading: true } });
+      excalidrawAPI.updateScene({ appState: { isLoading: true } });
 
-        initializeScene({ excalidrawAPI }).then((data) => {
-          loadImages(data);
-          if (data.scene) {
-            excalidrawAPI.updateScene({
-              elements: restoreElements(data.scene.elements, null, {
-                repairBindings: true,
-              }),
-              appState: restoreAppState(data.scene.appState, null),
-              captureUpdate: CaptureUpdateAction.IMMEDIATELY,
-            });
-          }
-        });
-      }
+      initializeScene({ excalidrawAPI }).then((data) => {
+        loadImages(data);
+        if (data.scene) {
+          excalidrawAPI.updateScene({
+            elements: restoreElements(data.scene.elements, null, {
+              repairBindings: true,
+            }),
+            appState: restoreAppState(data.scene.appState, null),
+            captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+          });
+        }
+      });
     };
 
     const syncData = debounce(() => {
@@ -421,13 +405,6 @@ const ExcalidrawWrapper = () => {
           excalidrawAPI.updateScene({
             ...localDataState,
             captureUpdate: CaptureUpdateAction.NEVER,
-          });
-          LibraryIndexedDBAdapter.load().then((data) => {
-            if (data) {
-              excalidrawAPI.updateLibrary({
-                libraryItems: data.libraryItems,
-              });
-            }
           });
         }
 
@@ -653,6 +630,10 @@ const ExcalidrawWrapper = () => {
               saveFileToDisk: true,
             },
           },
+          tools: {
+            image: true,
+          },
+          dockedSidebarBreakpoint: 0,
         }}
         langCode={langCode}
         renderCustomStats={renderCustomStats}
@@ -679,9 +660,6 @@ const ExcalidrawWrapper = () => {
           <OverwriteConfirmDialog.Actions.SaveToDisk />
         </OverwriteConfirmDialog>
         <AppFooter onChange={() => excalidrawAPI?.refresh()} />
-        {excalidrawAPI && <AIComponents excalidrawAPI={excalidrawAPI} />}
-
-        <TTDDialogTrigger />
 
         {localStorageQuotaExceeded && (
           <div className="alert alert--danger">
