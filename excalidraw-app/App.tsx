@@ -634,6 +634,7 @@ const ExcalidrawWrapper = () => {
             image: true,
           },
           dockedSidebarBreakpoint: 0,
+          libraryButton: false,
         }}
         langCode={langCode}
         renderCustomStats={renderCustomStats}
