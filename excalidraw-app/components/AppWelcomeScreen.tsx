@@ -12,7 +12,11 @@ export const AppWelcomeScreen: React.FC = React.memo(() => {
       </WelcomeScreen.Hints.MenuHint>
       <WelcomeScreen.Hints.ToolbarHint />
       <WelcomeScreen.Center>
-        <WelcomeScreen.Center.Logo />
+        <img
+          src="https://www.delivercomputing360.com/images/Logos/DC360-top.png"
+          alt="DC360 Logo"
+          style={{ width: 300, marginBottom: 16 }}
+        />
         <WelcomeScreen.Center.Heading>
           <>
             {t("welcomeScreen.app.center_heading")}
@@ -24,6 +28,7 @@ export const AppWelcomeScreen: React.FC = React.memo(() => {
         </WelcomeScreen.Center.Heading>
         <WelcomeScreen.Center.Menu>
           <WelcomeScreen.Center.MenuItemLoadScene />
+          <WelcomeScreen.Center.MenuItemHelp />
         </WelcomeScreen.Center.Menu>
       </WelcomeScreen.Center>
     </WelcomeScreen>
